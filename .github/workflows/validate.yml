@@ -1,0 +1,30 @@
+name: Validate Website
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check and build
+        env:
+          VITE_BASE_PATH: /energy-healing/
+          VITE_SITE_URL: https://kathysenergyhealing.com
+        run: npm run check
