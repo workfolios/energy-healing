@@ -81,7 +81,9 @@ const FAQ = () => {
             return (
               <motion.div 
                 key={index} 
-                ref={el => faqRefs.current[index] = el}
+                ref={(el) => {
+                  faqRefs.current[index] = el;
+                }}
                 whileHover={{ 
                   y: -4, 
                   boxShadow: isOpen ? "0 12px 24px -10px rgba(0, 0, 0, 0.3)" : "0 12px 24px -10px rgba(44, 57, 47, 0.12)" 
