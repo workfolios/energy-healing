@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Lato", sans-serif;
+
+  --color-ivory: #F9F8F4;
+  --color-stone-50: #F5F5F0;
+  --color-stone-100: #EBEAE5;
+  --color-stone-200: #D8D6D0;
+  --color-stone-800: #44403C;
+  --color-stone-900: #292524;
+  
+  --color-navy: #1E293B;
+  --color-charcoal: #333333;
+  
+  --color-sage-100: #E6ECE8;
+  --color-sage-200: #C8D6CC;
+  --color-sage-500: #84A98C;
+  --color-sage-600: #6B8E76;
+  --color-sage-700: #52796F;
+  
+  --color-amethyst-100: #F3EAF7;
+  --color-amethyst-200: #E0D0E8;
+  --color-amethyst-500: #9F86C0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-ivory);
+  color: var(--color-stone-800);
+  font-family: var(--font-sans);
+}
+
+/* Accessibility: Focus Styles */
+:focus-visible {
+  outline: 2px solid var(--color-sage-700);
+  outline-offset: 4px;
+}
+
+/* Skip to content link */
+.skip-link {
+  position: fixed;
+  top: -40px;
+  left: 0;
+  background: var(--color-stone-900);
+  color: var(--color-ivory);
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
