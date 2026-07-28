@@ -62,6 +62,24 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
 
+/*
+ * Keep the compact navigation through tablet widths. Tailwind's lg breakpoint
+ * begins at 1024px, where the full brand lockup, eight links, and CTA do not
+ * yet fit comfortably. The standard desktop navigation resumes at 1280px.
+ */
+@media (min-width: 64rem) and (max-width: 79.999rem) {
+  nav [class~="lg:flex"] {
+    display: none !important;
+  }
+
+  nav [class~="lg:hidden"] {
+    display: flex !important;
+  }
+
+  nav #mobile-navigation[class~="lg:hidden"] {
+    display: block !important;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
