@@ -29,7 +29,13 @@ The application supports both a custom domain and GitHub Pages project hosting.
 - `VITE_BASE_PATH=/energy-healing/` for `workfolios.github.io/energy-healing/`.
 - `VITE_SITE_URL=https://kathysenergyhealing.com` controls canonical and social metadata.
 
-The included GitHub Pages workflow builds and publishes the site from the `main` branch. In GitHub repository settings, Pages must use **GitHub Actions** as its source.
+The included GitHub Pages workflow builds and publishes the site from the `main` branch. GitHub Pages is configured to use **GitHub Actions** as its source.
+
+## Live Deployment
+
+- GitHub Pages preview: `https://workfolios.github.io/energy-healing/`
+- Deployment workflow: `.github/workflows/deploy-pages.yml`
+- Production branch: `main`
 
 ## Contact Form
 
