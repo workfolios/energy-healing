@@ -23,8 +23,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Type-check and build
+      - name: Run type-check and production build
+        id: validation
         env:
           VITE_BASE_PATH: /energy-healing/
           VITE_SITE_URL: https://kathysenergyhealing.com
-        run: npm run check
+        run: |
+          set +e
+          npm run check > validation.log 2>&1
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload validation diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-log
+          path: validation.log
+          retention-days: 3
+
+      - name: Surface validation output
+        if: always()
+        run: cat validation.log
+
+      - name: Enforce validation result
+        if: always()
+        run: test "${{ steps.validation.outputs.status }}" = "0"
