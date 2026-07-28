@@ -56,9 +56,41 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+  smoke-test:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Verify live Pages deployment
+        run: |
+          set -euo pipefail
+          base_url="https://workfolios.github.io/energy-healing"
+
+          for attempt in {1..12}; do
+            if curl -fsSL "$base_url/" -o home.html; then
+              break
+            fi
+            if [ "$attempt" -eq 12 ]; then
+              echo "The deployed homepage did not become available in time."
+              exit 1
+            fi
+            sleep 10
+          done
+
+          grep -q "Kathy Curr | Reiki Energy Healing" home.html
+
+          asset_path=$(grep -oE 'src="/energy-healing/assets/[^"]+\.js"' home.html | head -n 1 | cut -d'"' -f2)
+          test -n "$asset_path"
+          curl -fsSL "https://workfolios.github.io${asset_path}" -o app.js
+          grep -q "mrenjbda" app.js
+
+          for route in about services what-to-expect podcast community faq contact policies; do
+            curl -sSL "$base_url/$route" -o "$route.html"
+            grep -q "Kathy Curr | Reiki Energy Healing" "$route.html"
+          done
+
   report:
     runs-on: ubuntu-latest
-    needs: [build, deploy]
+    needs: [build, deploy, smoke-test]
     if: always()
     steps:
       - name: Record deployment result
@@ -66,13 +98,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BUILD_RESULT: ${{ needs.build.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
+          SMOKE_TEST_RESULT: ${{ needs.smoke-test.result }}
         run: |
-          if [ "$BUILD_RESULT" = "success" ] && [ "$DEPLOY_RESULT" = "success" ]; then
+          if [ "$BUILD_RESULT" = "success" ] && [ "$DEPLOY_RESULT" = "success" ] && [ "$SMOKE_TEST_RESULT" = "success" ]; then
             state=success
-            description="GitHub Pages deployment completed"
+            description="Pages deployment and live smoke test passed"
           else
             state=failure
-            description="GitHub Pages deployment failed"
+            description="Pages deployment or live smoke test failed"
           fi
 
           gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
