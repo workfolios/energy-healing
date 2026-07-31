@@ -1,10 +1,12 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { createServer } from 'vite';
+import { pathToFileURL } from 'node:url';
 
 const projectRoot = process.cwd();
 const distDirectory = path.resolve(projectRoot, 'dist');
+const prerenderDirectory = path.resolve(projectRoot, '.prerender');
 const templatePath = path.join(distDirectory, 'index.html');
+const serverBundlePath = path.join(prerenderDirectory, 'entry-server.js');
 const siteUrl = (process.env.VITE_SITE_URL || 'https://kathysenergyhealing.com').replace(/\/+$/, '');
 
 const routes = [
@@ -49,21 +51,12 @@ const outputPathForRoute = (route) => {
 };
 
 const template = await readFile(templatePath, 'utf8');
-const vite = await createServer({
-  root: projectRoot,
-  appType: 'custom',
-  logLevel: 'error',
-  server: { middlewareMode: true },
-  ssr: {
-    noExternal: ['react-router', 'react-router-dom', 'react-helmet-async'],
-  },
-});
 
 try {
-  const serverEntry = await vite.ssrLoadModule('/src/entry-server.tsx');
+  const serverEntry = await import(`${pathToFileURL(serverBundlePath).href}?v=${Date.now()}`);
 
   if (typeof serverEntry.render !== 'function') {
-    throw new Error('The server entry does not export a render function.');
+    throw new Error('The compiled server entry does not export a render function.');
   }
 
   for (const route of routes) {
@@ -92,5 +85,5 @@ try {
 
   console.log(`Prerendered ${routes.length} public routes and a noindex 404 page.`);
 } finally {
-  await vite.close();
+  await rm(prerenderDirectory, { recursive: true, force: true });
 }
