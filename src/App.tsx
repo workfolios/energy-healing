@@ -38,27 +38,31 @@ const ScrollHandler = () => {
   return null;
 };
 
-const routerBasename =
+export const routerBasename =
   import.meta.env.BASE_URL === '/' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '');
+
+export const AppRoutes = () => (
+  <Layout>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/services" element={<Services />} />
+      <Route path="/what-to-expect" element={<WhatToExpect />} />
+      <Route path="/podcast" element={<Podcast />} />
+      <Route path="/community" element={<Community />} />
+      <Route path="/faq" element={<FAQ />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/policies" element={<Policies />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </Layout>
+);
 
 export default function App() {
   return (
     <BrowserRouter basename={routerBasename}>
       <ScrollHandler />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/what-to-expect" element={<WhatToExpect />} />
-          <Route path="/podcast" element={<Podcast />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/policies" element={<Policies />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
+      <AppRoutes />
     </BrowserRouter>
   );
 }
