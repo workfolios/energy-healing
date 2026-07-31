@@ -66,7 +66,8 @@ jobs:
           base_url="https://workfolios.github.io/energy-healing"
 
           for attempt in {1..12}; do
-            if curl -fsSL "$base_url/" -o home.html; then
+            status=$(curl -sS -L -o home.html -w '%{http_code}' "$base_url/")
+            if [ "$status" = "200" ]; then
               break
             fi
             if [ "$attempt" -eq 12 ]; then
@@ -76,17 +77,44 @@ jobs:
             sleep 10
           done
 
-          grep -q "Kathy Curr | Reiki Energy Healing" home.html
+          grep -Fq "Kathy Curr Energy Healing" home.html
+          grep -Fq 'rel="canonical" href="https://kathysenergyhealing.com/"' home.html
+          grep -Fq 'application/ld+json' home.html
+          grep -Fq 'id="root"><div' home.html
+          if grep -Fq 'name="keywords"' home.html; then
+            echo "Obsolete meta keywords were found in the prerendered homepage."
+            exit 1
+          fi
 
           asset_path=$(grep -oE 'src="/energy-healing/assets/[^"]+\.js"' home.html | head -n 1 | cut -d'"' -f2)
           test -n "$asset_path"
           curl -fsSL "https://workfolios.github.io${asset_path}" -o app.js
           grep -q "mrenjbda" app.js
 
+          declare -A expected_titles=(
+            [about]="Meet the Practitioner"
+            [services]="Reiki &amp; Angel Guidance Services"
+            [what-to-expect]="What to Expect"
+            [podcast]="Podcast Guest Appearances"
+            [community]="Community &amp; Collaboration"
+            [faq]="Reiki &amp; Angel Guidance FAQ"
+            [contact]="Contact &amp; Inquiries"
+            [policies]="Policies &amp; Disclaimers"
+          )
+
           for route in about services what-to-expect podcast community faq contact policies; do
-            curl -sSL "$base_url/$route" -o "$route.html"
-            grep -q "Kathy Curr | Reiki Energy Healing" "$route.html"
+            status=$(curl -sS -L -o "$route.html" -w '%{http_code}' "$base_url/$route/")
+            test "$status" = "200"
+            grep -Fq "${expected_titles[$route]}" "$route.html"
+            grep -Fq "rel=\"canonical\" href=\"https://kathysenergyhealing.com/$route/\"" "$route.html"
+            grep -Fq 'application/ld+json' "$route.html"
+            grep -Fq 'id="root"><div' "$route.html"
           done
+
+          missing_status=$(curl -sS -o missing.html -w '%{http_code}' "$base_url/seo-smoke-test-missing")
+          test "$missing_status" = "404"
+          grep -Fq "Page Not Found" missing.html
+          grep -Fq "noindex, nofollow" missing.html
 
   report:
     runs-on: ubuntu-latest

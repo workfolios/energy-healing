@@ -17,5 +17,8 @@ export default defineConfig(({ mode }) => {
       target: 'es2022',
       sourcemap: false,
     },
+    ssr: {
+      noExternal: ['react-router', 'react-router-dom', 'react-helmet-async'],
+    },
   };
 });
