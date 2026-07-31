@@ -12,14 +12,14 @@ const Podcast = () => {
       podcastName: "Intuitive Kids",
       platform: "Spotify",
       embed: (
-        <iframe 
-          style={{ borderRadius: '12px' }} 
-          src="https://open.spotify.com/embed/episode/3cyZn6glKpr1CX3LlzVZ7i?utm_source=generator" 
-          width="100%" 
-          height="152" 
-          frameBorder="0" 
-          allowFullScreen={true} 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        <iframe
+          style={{ borderRadius: '12px' }}
+          src="https://open.spotify.com/embed/episode/3cyZn6glKpr1CX3LlzVZ7i?utm_source=generator"
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allowFullScreen={true}
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
       )
@@ -29,14 +29,14 @@ const Podcast = () => {
       podcastName: "Soul Chats With Dani Jo",
       platform: "Spotify",
       embed: (
-        <iframe 
-          style={{ borderRadius: '12px' }} 
-          src="https://open.spotify.com/embed/episode/0WaMqRJnKczUFU9dWI3e5n?utm_source=generator" 
-          width="100%" 
-          height="152" 
-          frameBorder="0" 
-          allowFullScreen={true} 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        <iframe
+          style={{ borderRadius: '12px' }}
+          src="https://open.spotify.com/embed/episode/0WaMqRJnKczUFU9dWI3e5n?utm_source=generator"
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allowFullScreen={true}
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
       )
@@ -46,12 +46,12 @@ const Podcast = () => {
       podcastName: "Angels & Awakening",
       platform: "Apple Podcasts",
       embed: (
-        <iframe 
-          allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" 
-          frameBorder="0" 
-          height="175" 
-          style={{ width: '100%', overflow: 'hidden', borderRadius: '12px' }} 
-          sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" 
+        <iframe
+          allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+          frameBorder="0"
+          height="175"
+          style={{ width: '100%', overflow: 'hidden', borderRadius: '12px' }}
+          sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
           src="https://embed.podcasts.apple.com/us/podcast/discovering-your-spiritual-potential/id1451424894?i=1000578030646"
         ></iframe>
       )
@@ -64,14 +64,14 @@ const Podcast = () => {
     platform: "YouTube",
     embed: (
       <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-lg border border-stone-200">
-        <iframe 
-          width="100%" 
-          height="100%" 
-          src="https://www.youtube.com/embed/QWeydCFRIsg?si=k1WYtaF-9OCFMNQp" 
-          title="YouTube video player" 
-          frameBorder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          referrerPolicy="strict-origin-when-cross-origin" 
+        <iframe
+          width="100%"
+          height="100%"
+          src="https://www.youtube.com/embed/QWeydCFRIsg?si=k1WYtaF-9OCFMNQp"
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen={true}
         ></iframe>
       </div>
@@ -80,8 +80,8 @@ const Podcast = () => {
 
   return (
     <div className="bg-ivory min-h-screen py-16 sm:py-24">
-      <SEO 
-        title="Podcasts" 
+      <SEO
+        title="Podcasts"
         description="Listen to Kathy Curr discuss intuitive energy healing, triggers, and spiritual guidance on various podcasts and media appearances."
         keywords="kathy curr podcast, intuitive kids spotify, energy healing media, spiritual guidance interview, healing arts guest appearance"
       />
@@ -103,7 +103,7 @@ const Podcast = () => {
             </div>
             <h2 className="font-serif text-3xl text-stone-900">Featured Video</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7">
               {videoEpisode.embed}
@@ -117,9 +117,9 @@ const Podcast = () => {
                 A deep dive into understanding emotional triggers and how energy healing can support emotional regulation in children and adults.
               </p>
               <div className="pt-4">
-                <a 
-                  href="https://www.youtube.com/watch?v=QWeydCFRIsg" 
-                  target="_blank" 
+                <a
+                  href="https://www.youtube.com/watch?v=QWeydCFRIsg"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 bg-stone-900 text-ivory px-8 py-3 rounded-full font-medium hover:bg-stone-800 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-1 group"
                 >
@@ -143,11 +143,11 @@ const Podcast = () => {
 
           <div className="space-y-12">
             {audioEpisodes.map((ep, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
-                whileHover={{ 
-                  y: -4, 
-                  boxShadow: "0 12px 24px -10px rgba(44, 57, 47, 0.12)" 
+                whileHover={{
+                  y: -4,
+                  boxShadow: "0 12px 24px -10px rgba(44, 57, 47, 0.12)"
                 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="group bg-white rounded-[2.5rem] p-8 md:p-10 shadow-xl border border-sage-700/30 hover:border-sage-700/50 transition-all duration-300"
@@ -173,7 +173,7 @@ const Podcast = () => {
             ))}
           </div>
         </section>
-        
+
         {/* Guest Inquiry Box */}
         <div className="mt-32 max-w-4xl mx-auto">
           <div className="bg-white border-sage-700/30 p-12 md:p-16 rounded-[3rem] border shadow-2xl text-center transition-all duration-500 relative overflow-hidden group hover:shadow-sage-200/40">
@@ -183,10 +183,11 @@ const Podcast = () => {
             </div>
             <h3 className="font-serif text-4xl text-stone-900 mb-6">Podcast Guest Inquiries</h3>
             <p className="text-stone-600 text-xl mb-10 max-w-xl mx-auto">
-              Interested in having Kathy share her insights on your show? We'd love to hear from you.
+              <span className="block">Interested in having Kathy share her insights on your show?</span>
+              <span className="block">We&apos;d love to hear from you.</span>
             </p>
-            <Link 
-              to="/contact#inquiry-form" 
+            <Link
+              to="/contact#inquiry-form"
               className="inline-block bg-stone-900 text-ivory px-12 py-4 rounded-full font-medium hover:bg-stone-800 hover:scale-[1.02] transition-all shadow-lg hover:shadow-xl transform duration-300"
             >
               Get in touch for a guest appearance
