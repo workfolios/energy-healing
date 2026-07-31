@@ -54,6 +54,9 @@ const vite = await createServer({
   appType: 'custom',
   logLevel: 'error',
   server: { middlewareMode: true },
+  ssr: {
+    noExternal: ['react-router', 'react-router-dom', 'react-helmet-async'],
+  },
 });
 
 try {
