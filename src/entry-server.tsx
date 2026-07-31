@@ -1,20 +1,10 @@
+import type { ComponentProps } from 'react';
 import { renderToString } from 'react-dom/server';
 import { HelmetProvider } from 'react-helmet-async';
 import { MemoryRouter } from 'react-router-dom';
 import { AppRoutes, routerBasename } from './App';
 
-type HelmetValue = {
-  toString: () => string;
-};
-
-type HelmetContext = {
-  helmet?: {
-    title?: HelmetValue;
-    meta?: HelmetValue;
-    link?: HelmetValue;
-    script?: HelmetValue;
-  };
-};
+type HelmetContext = NonNullable<ComponentProps<typeof HelmetProvider>['context']>;
 
 const routeEntry = (url: string) => {
   if (!routerBasename) return url;
@@ -34,10 +24,10 @@ export const render = (url: string) => {
 
   const helmet = helmetContext.helmet;
   const head = [
-    helmet?.title?.toString(),
-    helmet?.meta?.toString(),
-    helmet?.link?.toString(),
-    helmet?.script?.toString(),
+    helmet?.title.toString(),
+    helmet?.meta.toString(),
+    helmet?.link.toString(),
+    helmet?.script.toString(),
   ]
     .filter(Boolean)
     .join('\n');
