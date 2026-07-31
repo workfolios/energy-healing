@@ -29,7 +29,7 @@ The static build includes:
 - Organization, WebSite, WebPage, Person, Service, and breadcrumb JSON-LD where applicable
 - Hydratable page content for all public routes
 - A noindex custom `404.html`
-- A canonical production-domain `sitemap.xml`
+- A canonical sitemap for the currently published website URL
 
 ## Static Route Output
 
@@ -49,32 +49,41 @@ Each route is emitted as a directory-level `index.html`, allowing static hosts t
 
 ## Deployment Configuration
 
-The application supports both a custom domain and GitHub Pages project hosting.
+The currently published and SEO-governing website URL is:
 
-- `VITE_BASE_PATH=/` for the production custom domain.
-- `VITE_BASE_PATH=/energy-healing/` for `workfolios.github.io/energy-healing/`.
-- `VITE_SITE_URL=https://kathysenergyhealing.com` controls canonical, sitemap, structured-data, and social metadata.
+```text
+https://workfolios.github.io/energy-healing/
+```
+
+Current deployment variables:
+
+- `VITE_BASE_PATH=/energy-healing/`
+- `VITE_SITE_URL=https://workfolios.github.io/energy-healing`
+
+`VITE_SITE_URL` controls canonical URLs, sitemap entries, structured-data identifiers, social metadata, and absolute image URLs. It must continue to match the publicly accessible website until a custom domain has been purchased, connected, and verified.
 
 The included GitHub Pages workflow builds and publishes the site from the `main` branch. GitHub Pages is configured to use **GitHub Actions** as its source.
 
 ## Live Deployment
 
-- GitHub Pages preview: `https://workfolios.github.io/energy-healing/`
+- Published website: `https://workfolios.github.io/energy-healing/`
 - Deployment workflow: `.github/workflows/deploy-pages.yml`
 - Production branch: `main`
 
-The deployment smoke test verifies that all public routes return successful responses, contain prerendered page content, use the correct production canonical URL, include JSON-LD, and expose a noindex 404 page.
+The deployment smoke test verifies that all public routes return successful responses, contain prerendered page content, use the current GitHub Pages canonical URL, include JSON-LD, and expose a noindex 404 page.
 
 ## Search Engine Operations
 
 After material content or metadata changes:
 
-1. Confirm the production custom domain resolves to the current deployment.
-2. Verify `https://kathysenergyhealing.com/robots.txt` and `https://kathysenergyhealing.com/sitemap.xml` are accessible.
-3. Submit the sitemap in Google Search Console and Bing Webmaster Tools.
+1. Verify `https://workfolios.github.io/energy-healing/robots.txt` and `https://workfolios.github.io/energy-healing/sitemap.xml` are accessible.
+2. Add or confirm the URL-prefix property `https://workfolios.github.io/energy-healing/` in Google Search Console.
+3. Submit `https://workfolios.github.io/energy-healing/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 4. Use URL Inspection to validate the homepage, Services, About, and Contact pages.
 5. Request recrawling after significant title, service, location, or structured-data updates.
 6. Test JSON-LD with Google Rich Results Test and Schema.org Validator.
+
+When a custom domain is purchased and connected, update `VITE_SITE_URL`, the canonical sitemap source, the workflow verification URLs, and search-engine properties in one controlled migration. Do not point SEO signals to a custom domain before it is publicly active.
 
 Do not add a street address to structured data unless Kathy has approved that address for public display. The current schema uses service regions and the publicly stated Huron, South Dakota location without publishing a street address.
 
