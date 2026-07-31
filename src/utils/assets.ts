@@ -1,7 +1,7 @@
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '');
 
 export const SITE_URL = trimTrailingSlash(
-  import.meta.env.VITE_SITE_URL || 'https://kathysenergyhealing.com',
+  import.meta.env.VITE_SITE_URL || 'https://workfolios.github.io/energy-healing',
 );
 
 export const assetUrl = (filename: string) =>

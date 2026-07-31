@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kathysenergyhealing.com/sitemap.xml
+Sitemap: https://workfolios.github.io/energy-healing/sitemap.xml

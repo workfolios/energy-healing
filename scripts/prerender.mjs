@@ -7,7 +7,7 @@ const distDirectory = path.resolve(projectRoot, 'dist');
 const prerenderDirectory = path.resolve(projectRoot, '.prerender');
 const templatePath = path.join(distDirectory, 'index.html');
 const serverBundlePath = path.join(prerenderDirectory, 'entry-server.js');
-const siteUrl = (process.env.VITE_SITE_URL || 'https://kathysenergyhealing.com').replace(/\/+$/, '');
+const siteUrl = (process.env.VITE_SITE_URL || 'https://workfolios.github.io/energy-healing').replace(/\/+$/, '');
 
 const routes = [
   '/',
