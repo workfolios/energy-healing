@@ -153,13 +153,45 @@ jobs:
     needs: [build, deploy, smoke-test]
     if: always()
     steps:
-      - name: Record deployment result
+      - name: Record deployment results
         env:
           GH_TOKEN: ${{ github.token }}
           BUILD_RESULT: ${{ needs.build.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
           SMOKE_TEST_RESULT: ${{ needs.smoke-test.result }}
         run: |
+          post_stage_status() {
+            local result="$1"
+            local context="$2"
+            local success_description="$3"
+            local failure_description="$4"
+
+            if [ "$result" = "success" ]; then
+              stage_state=success
+              stage_description="$success_description"
+            else
+              stage_state=failure
+              stage_description="$failure_description: $result"
+            fi
+
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
+              -f state="$stage_state" \
+              -f context="$context" \
+              -f description="$stage_description"
+          }
+
+          post_stage_status "$BUILD_RESULT" "github-pages/build" \
+            "Prerender build and artifact verification passed" \
+            "Prerender build or artifact verification failed"
+
+          post_stage_status "$DEPLOY_RESULT" "github-pages/publish" \
+            "GitHub Pages publication passed" \
+            "GitHub Pages publication failed"
+
+          post_stage_status "$SMOKE_TEST_RESULT" "github-pages/live-smoke-test" \
+            "Live route and metadata verification passed" \
+            "Live route or metadata verification failed"
+
           if [ "$BUILD_RESULT" = "success" ] && [ "$DEPLOY_RESULT" = "success" ] && [ "$SMOKE_TEST_RESULT" = "success" ]; then
             state=success
             description="Pages deployment and live smoke test passed"
