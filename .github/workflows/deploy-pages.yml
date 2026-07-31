@@ -41,6 +41,16 @@ jobs:
         run: |
           set -euo pipefail
 
+          verify_nonempty_root() {
+            local file="$1"
+
+            grep -Fq 'id="root">' "$file"
+            if grep -Fq '<div id="root"></div>' "$file"; then
+              echo "The application root is empty in $file."
+              exit 1
+            fi
+          }
+
           verify_page() {
             local file="$1"
             local canonical="$2"
@@ -50,7 +60,7 @@ jobs:
             grep -Fq "$title_token" "$file"
             grep -Fq "$canonical" "$file"
             grep -Fq 'application/ld+json' "$file"
-            grep -Fq 'id="root"><div' "$file"
+            verify_nonempty_root "$file"
 
             if grep -Fq 'name="keywords"' "$file"; then
               echo "Obsolete meta keywords were found in $file."
@@ -71,6 +81,7 @@ jobs:
           test -s dist/404.html
           grep -Fq "Page Not Found" dist/404.html
           grep -Fq "noindex, nofollow" dist/404.html
+          verify_nonempty_root dist/404.html
           grep -Fq "https://kathysenergyhealing.com/sitemap.xml" dist/robots.txt
 
       - name: Configure GitHub Pages
@@ -101,6 +112,16 @@ jobs:
           set -euo pipefail
           base_url="https://workfolios.github.io/energy-healing"
 
+          verify_nonempty_root() {
+            local file="$1"
+
+            grep -Fq 'id="root">' "$file"
+            if grep -Fq '<div id="root"></div>' "$file"; then
+              echo "The deployed application root is empty in $file."
+              exit 1
+            fi
+          }
+
           for attempt in {1..12}; do
             status=$(curl -sS -L -o home.html -w '%{http_code}' "$base_url/")
             if [ "$status" = "200" ]; then
@@ -116,7 +137,7 @@ jobs:
           grep -Fq "Kathy Curr Energy Healing" home.html
           grep -Fq "https://kathysenergyhealing.com/" home.html
           grep -Fq 'application/ld+json' home.html
-          grep -Fq 'id="root"><div' home.html
+          verify_nonempty_root home.html
 
           asset_path=$(grep -oE 'src="/energy-healing/assets/[^"]+\.js"' home.html | head -n 1 | cut -d'"' -f2)
           test -n "$asset_path"
@@ -140,13 +161,14 @@ jobs:
             grep -Fq "${expected_tokens[$route]}" "$route.html"
             grep -Fq "https://kathysenergyhealing.com/$route/" "$route.html"
             grep -Fq 'application/ld+json' "$route.html"
-            grep -Fq 'id="root"><div' "$route.html"
+            verify_nonempty_root "$route.html"
           done
 
           missing_status=$(curl -sS -L -o missing.html -w '%{http_code}' "$base_url/seo-smoke-test-missing")
           test "$missing_status" = "404"
           grep -Fq "Page Not Found" missing.html
           grep -Fq "noindex, nofollow" missing.html
+          verify_nonempty_root missing.html
 
   report:
     runs-on: ubuntu-latest
