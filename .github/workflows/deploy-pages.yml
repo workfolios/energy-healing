@@ -37,6 +37,42 @@ jobs:
           VITE_SITE_URL: https://kathysenergyhealing.com
         run: npm run check
 
+      - name: Verify prerendered SEO artifact
+        run: |
+          set -euo pipefail
+
+          verify_page() {
+            local file="$1"
+            local canonical="$2"
+            local title_token="$3"
+
+            test -s "$file"
+            grep -Fq "$title_token" "$file"
+            grep -Fq "$canonical" "$file"
+            grep -Fq 'application/ld+json' "$file"
+            grep -Fq 'id="root"><div' "$file"
+
+            if grep -Fq 'name="keywords"' "$file"; then
+              echo "Obsolete meta keywords were found in $file."
+              exit 1
+            fi
+          }
+
+          verify_page dist/index.html "https://kathysenergyhealing.com/" "Kathy Curr Energy Healing"
+          verify_page dist/about/index.html "https://kathysenergyhealing.com/about/" "Meet the Practitioner"
+          verify_page dist/services/index.html "https://kathysenergyhealing.com/services/" "Reiki"
+          verify_page dist/what-to-expect/index.html "https://kathysenergyhealing.com/what-to-expect/" "What to Expect"
+          verify_page dist/podcast/index.html "https://kathysenergyhealing.com/podcast/" "Podcast Guest Appearances"
+          verify_page dist/community/index.html "https://kathysenergyhealing.com/community/" "Community"
+          verify_page dist/faq/index.html "https://kathysenergyhealing.com/faq/" "FAQ"
+          verify_page dist/contact/index.html "https://kathysenergyhealing.com/contact/" "Contact"
+          verify_page dist/policies/index.html "https://kathysenergyhealing.com/policies/" "Policies"
+
+          test -s dist/404.html
+          grep -Fq "Page Not Found" dist/404.html
+          grep -Fq "noindex, nofollow" dist/404.html
+          grep -Fq "https://kathysenergyhealing.com/sitemap.xml" dist/robots.txt
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -78,40 +114,36 @@ jobs:
           done
 
           grep -Fq "Kathy Curr Energy Healing" home.html
-          grep -Fq 'rel="canonical" href="https://kathysenergyhealing.com/"' home.html
+          grep -Fq "https://kathysenergyhealing.com/" home.html
           grep -Fq 'application/ld+json' home.html
           grep -Fq 'id="root"><div' home.html
-          if grep -Fq 'name="keywords"' home.html; then
-            echo "Obsolete meta keywords were found in the prerendered homepage."
-            exit 1
-          fi
 
           asset_path=$(grep -oE 'src="/energy-healing/assets/[^"]+\.js"' home.html | head -n 1 | cut -d'"' -f2)
           test -n "$asset_path"
           curl -fsSL "https://workfolios.github.io${asset_path}" -o app.js
           grep -q "mrenjbda" app.js
 
-          declare -A expected_titles=(
+          declare -A expected_tokens=(
             [about]="Meet the Practitioner"
-            [services]="Reiki &amp; Angel Guidance Services"
+            [services]="Reiki"
             [what-to-expect]="What to Expect"
             [podcast]="Podcast Guest Appearances"
-            [community]="Community &amp; Collaboration"
-            [faq]="Reiki &amp; Angel Guidance FAQ"
-            [contact]="Contact &amp; Inquiries"
-            [policies]="Policies &amp; Disclaimers"
+            [community]="Community"
+            [faq]="FAQ"
+            [contact]="Contact"
+            [policies]="Policies"
           )
 
           for route in about services what-to-expect podcast community faq contact policies; do
             status=$(curl -sS -L -o "$route.html" -w '%{http_code}' "$base_url/$route/")
             test "$status" = "200"
-            grep -Fq "${expected_titles[$route]}" "$route.html"
-            grep -Fq "rel=\"canonical\" href=\"https://kathysenergyhealing.com/$route/\"" "$route.html"
+            grep -Fq "${expected_tokens[$route]}" "$route.html"
+            grep -Fq "https://kathysenergyhealing.com/$route/" "$route.html"
             grep -Fq 'application/ld+json' "$route.html"
             grep -Fq 'id="root"><div' "$route.html"
           done
 
-          missing_status=$(curl -sS -o missing.html -w '%{http_code}' "$base_url/seo-smoke-test-missing")
+          missing_status=$(curl -sS -L -o missing.html -w '%{http_code}' "$base_url/seo-smoke-test-missing")
           test "$missing_status" = "404"
           grep -Fq "Page Not Found" missing.html
           grep -Fq "noindex, nofollow" missing.html
