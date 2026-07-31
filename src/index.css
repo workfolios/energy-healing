@@ -62,6 +62,38 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
 }
 
+/* Footer disclosures and mobile safe-area support */
+.site-footer-safe-area {
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+}
+
+.footer-disclosure-summary {
+  list-style: none;
+}
+
+.footer-disclosure-summary::-webkit-details-marker {
+  display: none;
+}
+
+.back-to-top-safe-position {
+  right: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 40rem) {
+  .back-to-top-safe-position {
+    right: 1.5rem;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 48rem) {
+  .back-to-top-safe-position {
+    right: 2rem;
+    bottom: 2rem;
+  }
+}
+
 /*
  * Keep the compact navigation through tablet widths. Tailwind's lg breakpoint
  * begins at 1024px, where the full brand lockup, eight links, and CTA do not
