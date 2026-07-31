@@ -184,7 +184,7 @@ const Podcast = () => {
             <h3 className="font-serif text-4xl text-stone-900 mb-6">Podcast Guest Inquiries</h3>
             <p className="text-stone-600 text-xl mb-10 max-w-xl mx-auto">
               <span className="block">Interested in having Kathy share her insights on your show?</span>
-              <span className="block">We&apos;d love to hear from you.</span>
+              <span className="mt-4 block">We&apos;d love to hear from you!</span>
             </p>
             <Link
               to="/contact#inquiry-form"

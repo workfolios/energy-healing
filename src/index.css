@@ -114,11 +114,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /*
- * In horizontal Contact layouts, reserve the same lower action space beneath
- * the Inquiry Timeline card that the adjacent form reserves for its submit
- * button. This aligns the timeline and policy acknowledgement card tops.
+ * In horizontal Contact layouts, reserve lower action space beneath the
+ * Inquiry Timeline card to align it with the policy acknowledgement card.
+ * The iPad Pro-width layout needs slightly less compensation than desktop.
  */
-@media (min-width: 64rem) {
+@media (min-width: 64rem) and (max-width: 79.999rem) {
+  .grid:has(> #inquiry-form) > div:first-child > div > .mt-12.pt-12.border-t {
+    margin-bottom: 4.25rem;
+  }
+}
+
+@media (min-width: 80rem) {
   .grid:has(> #inquiry-form) > div:first-child > div > .mt-12.pt-12.border-t {
     margin-bottom: 4.75rem;
   }
