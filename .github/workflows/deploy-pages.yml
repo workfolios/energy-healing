@@ -64,8 +64,8 @@ jobs:
             fi
           }
 
-          verify_page dist/index.html "https://workfolios.github.io/energy-healing/" "Kathy Curr Energy Healing"
-          verify_page dist/about/index.html "https://workfolios.github.io/energy-healing/about/" "Meet the Practitioner"
+          verify_page dist/index.html "https://workfolios.github.io/energy-healing/" "Huron, SD"
+          verify_page dist/about/index.html "https://workfolios.github.io/energy-healing/about/" "Kathy Curr"
           verify_page dist/services/index.html "https://workfolios.github.io/energy-healing/services/" "Reiki"
           verify_page dist/what-to-expect/index.html "https://workfolios.github.io/energy-healing/what-to-expect/" "What to Expect"
           verify_page dist/podcast/index.html "https://workfolios.github.io/energy-healing/podcast/" "Podcast Guest Appearances"
@@ -74,11 +74,17 @@ jobs:
           verify_page dist/contact/index.html "https://workfolios.github.io/energy-healing/contact/" "Contact"
           verify_page dist/policies/index.html "https://workfolios.github.io/energy-healing/policies/" "Policies"
 
+          grep -Fq 'max-image-preview:large' dist/index.html
+          grep -Fq 'KEH_Photo_Headshot_Avatar_Square_WarmIvory_v04.webp' dist/about/index.html
+
+          test -s dist/sitemap.xml
+          grep -Fq '<lastmod>2026-08-18</lastmod>' dist/sitemap.xml
+          grep -Fq "https://workfolios.github.io/energy-healing/sitemap.xml" dist/robots.txt
+
           test -s dist/404.html
           grep -Fq "Page Not Found" dist/404.html
           grep -Fq "noindex, nofollow" dist/404.html
           verify_nonempty_root dist/404.html
-          grep -Fq "https://workfolios.github.io/energy-healing/sitemap.xml" dist/robots.txt
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
@@ -136,9 +142,10 @@ jobs:
             sleep 10
           done
 
-          grep -Fq "Kathy Curr Energy Healing" home.html
+          grep -Fq "Huron, SD" home.html
           grep -Fq "https://workfolios.github.io/energy-healing/" home.html
           grep -Fq 'application/ld+json' home.html
+          grep -Fq 'max-image-preview:large' home.html
           verify_nonempty_root home.html
 
           asset_path=$(grep -oE 'src="/energy-healing/assets/[^"]+\.js"' home.html | head -n 1 | cut -d'"' -f2)
@@ -147,7 +154,7 @@ jobs:
           grep -q "mrenjbda" app.js
 
           declare -A expected_tokens=(
-            [about]="Meet the Practitioner"
+            [about]="Kathy Curr"
             [services]="Reiki"
             [what-to-expect]="What to Expect"
             [podcast]="Podcast Guest Appearances"
@@ -165,6 +172,13 @@ jobs:
             grep -Fq 'application/ld+json' "$route.html"
             verify_nonempty_root "$route.html"
           done
+
+          grep -Fq 'KEH_Photo_Headshot_Avatar_Square_WarmIvory_v04.webp' about.html
+
+          curl -fsSL "$base_url/sitemap.xml" -o sitemap.xml
+          grep -Fq '<lastmod>2026-08-18</lastmod>' sitemap.xml
+          curl -fsSL "$base_url/robots.txt" -o robots.txt
+          grep -Fq "$base_url/sitemap.xml" robots.txt
 
           missing_status=$(curl -sS -L -o missing.html -w '%{http_code}' "$base_url/seo-smoke-test-missing")
           test "$missing_status" = "404"
