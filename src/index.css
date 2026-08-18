@@ -44,7 +44,7 @@ body {
 
 /* Tactile press feedback for existing rounded button-style actions. */
 a[class~="rounded-full"]:active,
-button[class~="rounded-full"]:not(:disabled):active {
+button[class~="rounded-full"]:not(:disabled):not(.back-to-top-safe-position):active {
   transform: scale(0.98);
 }
 
@@ -142,7 +142,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   a[class~="rounded-full"]:active,
-  button[class~="rounded-full"]:not(:disabled):active {
+  button[class~="rounded-full"]:not(:disabled):not(.back-to-top-safe-position):active {
     transform: none !important;
   }
 
