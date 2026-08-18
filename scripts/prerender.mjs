@@ -8,6 +8,7 @@ const prerenderDirectory = path.resolve(projectRoot, '.prerender');
 const templatePath = path.join(distDirectory, 'index.html');
 const serverBundlePath = path.join(prerenderDirectory, 'entry-server.js');
 const siteUrl = (process.env.VITE_SITE_URL || 'https://workfolios.github.io/energy-healing').replace(/\/+$/, '');
+const seoLastModified = '2026-08-18';
 
 const routes = [
   '/',
@@ -76,7 +77,7 @@ try {
   const sitemapEntries = routes
     .map((route) => {
       const location = route === '/' ? `${siteUrl}/` : `${siteUrl}${route}/`;
-      return `  <url><loc>${location}</loc></url>`;
+      return `  <url><loc>${location}</loc><lastmod>${seoLastModified}</lastmod></url>`;
     })
     .join('\n');
 
