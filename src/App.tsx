@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { MotionConfig } from 'motion/react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import About from './pages/About';
@@ -42,20 +43,22 @@ export const routerBasename =
   import.meta.env.BASE_URL === '/' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export const AppRoutes = () => (
-  <Layout>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/services" element={<Services />} />
-      <Route path="/what-to-expect" element={<WhatToExpect />} />
-      <Route path="/podcast" element={<Podcast />} />
-      <Route path="/community" element={<Community />} />
-      <Route path="/faq" element={<FAQ />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/policies" element={<Policies />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  </Layout>
+  <MotionConfig reducedMotion="user">
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/what-to-expect" element={<WhatToExpect />} />
+        <Route path="/podcast" element={<Podcast />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/policies" element={<Policies />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Layout>
+  </MotionConfig>
 );
 
 export default function App() {

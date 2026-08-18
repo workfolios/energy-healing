@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Mail, MapPin, Clock, CheckCircle2 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import SEO from '../components/SEO';
 import { assetUrl } from '../utils/assets';
 
@@ -20,6 +20,21 @@ const Contact = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const confirmationRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (!isSubmitted) return;
+
+    const confirmation = confirmationRef.current;
+    if (!confirmation) return;
+
+    confirmation.focus({ preventScroll: true });
+    confirmation.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'start'
+    });
+  }, [isSubmitted, prefersReducedMotion]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -87,9 +102,6 @@ const Contact = () => {
           message: '',
           policyAgreement: false
         });
-        // Scroll to form top if needed
-        const form = document.getElementById('inquiry-form');
-        if (form) form.scrollIntoView({ behavior: 'smooth' });
       } else {
         throw new Error('Form submission failed');
       }
@@ -179,6 +191,8 @@ const Contact = () => {
             
             {isSubmitted ? (
               <motion.div 
+                ref={confirmationRef}
+                tabIndex={-1}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="py-12 px-4 text-center space-y-8"

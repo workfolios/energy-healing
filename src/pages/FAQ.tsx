@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
@@ -8,6 +8,7 @@ import { assetUrl } from '../utils/assets';
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const faqRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prefersReducedMotion = useReducedMotion();
 
   const toggleFAQ = (index: number) => {
     const isOpen = openIndex === index;
@@ -17,7 +18,7 @@ const FAQ = () => {
       // Small delay to allow some animation to start, then scroll
       setTimeout(() => {
         faqRefs.current[index]?.scrollIntoView({
-          behavior: 'smooth',
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
           block: 'center'
         });
       }, 100);
