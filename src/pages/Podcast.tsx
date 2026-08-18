@@ -13,6 +13,7 @@ const Podcast = () => {
       platform: "Spotify",
       embed: (
         <iframe
+          title="Spotify player: Identifying Anger and Its Triggers"
           style={{ borderRadius: '12px' }}
           src="https://open.spotify.com/embed/episode/3cyZn6glKpr1CX3LlzVZ7i?utm_source=generator"
           width="100%"
@@ -30,6 +31,7 @@ const Podcast = () => {
       platform: "Spotify",
       embed: (
         <iframe
+          title="Spotify player: Episode 21 Featuring Kathy Curr"
           style={{ borderRadius: '12px' }}
           src="https://open.spotify.com/embed/episode/0WaMqRJnKczUFU9dWI3e5n?utm_source=generator"
           width="100%"
@@ -47,6 +49,7 @@ const Podcast = () => {
       platform: "Apple Podcasts",
       embed: (
         <iframe
+          title="Apple Podcasts player: Discovering Your Spiritual Potential"
           allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
           frameBorder="0"
           height="175"
