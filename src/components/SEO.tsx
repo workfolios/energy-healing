@@ -18,6 +18,8 @@ type RouteMetadata = {
   fullTitle?: string;
   description: string;
   breadcrumb: string;
+  ogImage?: string;
+  imageAlt?: string;
 };
 
 const SITE_NAME = 'Kathy Curr Energy Healing';
@@ -27,55 +29,57 @@ const DEFAULT_IMAGE_ALT = 'Kathy Curr Energy Healing arched tree logo';
 
 const routeMetadata: Record<string, RouteMetadata> = {
   '/': {
-    fullTitle: 'Kathy Curr Energy Healing | Reiki & Angel Guidance',
+    fullTitle: 'Reiki & Angel Guidance in Huron, SD | Kathy Curr',
     description:
-      'Kathy Curr offers in-person Reiki treatments and in-person or virtual angel guidance sessions across South Dakota, North Dakota, and Minnesota.',
+      'Kathy Curr offers in-person Reiki in Huron, South Dakota, plus in-person or virtual angel guidance with limited regional availability across SD, ND, and MN.',
     breadcrumb: 'Home',
   },
   '/about': {
-    title: 'Meet the Practitioner',
+    fullTitle: 'Kathy Curr | Reiki Practitioner in Huron, SD',
     description:
-      'Meet Kathy Curr, a certified Reiki practitioner and retired special education educator offering grounded Reiki treatments and angel guidance sessions.',
+      'Meet Kathy Curr, a certified Level II Reiki practitioner and retired special education educator in Huron, South Dakota, offering Reiki and angel guidance.',
     breadcrumb: 'Meet the Practitioner',
+    ogImage: 'KEH_Photo_Headshot_Avatar_Square_WarmIvory_v04.webp',
+    imageAlt: 'Portrait of Kathy Curr, Reiki and angel guidance practitioner',
   },
   '/services': {
-    title: 'Reiki & Angel Guidance Services',
+    fullTitle: 'Reiki & Angel Guidance Services | Huron, SD',
     description:
-      'Explore adult and youth Reiki treatments and angel guidance sessions with Kathy Curr, including pricing, formats, and service-area availability.',
+      'Compare adult and youth Reiki treatments and angel guidance sessions with Kathy Curr, including pricing, session formats, and service-area availability.',
     breadcrumb: 'Services',
   },
   '/what-to-expect': {
-    title: 'What to Expect',
+    fullTitle: 'What to Expect From Reiki & Angel Guidance | Kathy Curr',
     description:
-      'Learn what to expect before, during, and after an in-person Reiki treatment or angel guidance session with Kathy Curr.',
+      'Learn what happens before, during, and after Reiki treatments and angel guidance sessions with Kathy Curr, including preparation and session expectations.',
     breadcrumb: 'What to Expect',
   },
   '/podcast': {
-    title: 'Podcast Guest Appearances',
+    fullTitle: 'Kathy Curr Podcast Guest Appearances | Energy Healing',
     description:
-      "Watch and listen to Kathy Curr's guest podcast appearances on energy healing, intuition, emotional triggers, and spiritual guidance.",
+      "Watch and listen to Kathy Curr's podcast guest appearances about energy healing, intuition, emotional triggers, and spiritual guidance.",
     breadcrumb: 'Podcasts',
   },
   '/community': {
-    title: 'Community & Collaboration',
+    fullTitle: 'Community, Mentorship & Collaboration | Kathy Curr',
     description:
-      'Explore mentorship, media appearances, editorial work, and community collaboration opportunities with Kathy Curr.',
+      'Explore mentorship, podcast and media appearances, editorial work, and community collaboration opportunities with Kathy Curr.',
     breadcrumb: 'Community',
   },
   '/faq': {
-    title: 'Reiki & Angel Guidance FAQ',
+    fullTitle: 'Reiki & Angel Guidance FAQ | Kathy Curr',
     description:
-      'Find answers about Reiki treatments, angel guidance sessions, youth participation, virtual availability, scheduling, and policies.',
+      'Find answers about Reiki and angel guidance with Kathy Curr, including youth participation, virtual availability, scheduling, service areas, and policies.',
     breadcrumb: 'FAQ',
   },
   '/contact': {
-    title: 'Contact & Inquiries',
+    fullTitle: 'Contact Kathy Curr | Reiki & Angel Guidance',
     description:
-      'Contact Kathy Curr about Reiki treatments, angel guidance sessions, podcast appearances, mentorship, or collaborative projects.',
+      'Contact Kathy Curr about Reiki in Huron, angel guidance, regional availability, podcast appearances, mentorship, or collaborative projects.',
     breadcrumb: 'Contact',
   },
   '/policies': {
-    title: 'Policies & Disclaimers',
+    fullTitle: "Policies & Disclaimers | Kathy's Energy Healing",
     description:
       "Review Kathy's Energy Healing, LLC policies, cancellation terms, youth consent requirements, privacy practices, and spiritual-services disclaimers.",
     breadcrumb: 'Policies & Disclaimers',
@@ -106,27 +110,31 @@ const buildStructuredData = (
   const personId = `${canonicalForPath('/about')}#kathy-curr`;
   const metadata = routeMetadata[normalizedPath];
 
-  const graph: Record<string, unknown>[] = [
-    {
-      '@type':
-        normalizedPath === '/about'
-          ? 'AboutPage'
-          : normalizedPath === '/contact'
-            ? 'ContactPage'
-            : 'WebPage',
-      '@id': webPageId,
-      url: canonicalUrl,
-      name: fullTitle,
-      description,
-      isPartOf: { '@id': websiteId },
-      about: { '@id': organizationId },
-      primaryImageOfPage: {
-        '@type': 'ImageObject',
-        url: socialImage,
-      },
-      inLanguage: 'en-US',
+  const webPage: Record<string, unknown> = {
+    '@type':
+      normalizedPath === '/about'
+        ? 'AboutPage'
+        : normalizedPath === '/contact'
+          ? 'ContactPage'
+          : 'WebPage',
+    '@id': webPageId,
+    url: canonicalUrl,
+    name: fullTitle,
+    description,
+    isPartOf: { '@id': websiteId },
+    about: { '@id': organizationId },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: socialImage,
     },
-  ];
+    inLanguage: 'en-US',
+  };
+
+  if (normalizedPath === '/about') {
+    webPage.mainEntity = { '@id': personId };
+  }
+
+  const graph: Record<string, unknown>[] = [webPage];
 
   if (normalizedPath === '/') {
     graph.push(
@@ -135,7 +143,7 @@ const buildStructuredData = (
         '@id': websiteId,
         url: `${SITE_URL}/`,
         name: SITE_NAME,
-        alternateName: 'Kathy Curr',
+        alternateName: "Kathy's Energy Healing",
         publisher: { '@id': organizationId },
         inLanguage: 'en-US',
       },
@@ -145,6 +153,7 @@ const buildStructuredData = (
         name: LEGAL_NAME,
         alternateName: SITE_NAME,
         url: `${SITE_URL}/`,
+        description: routeMetadata['/'].description,
         logo: {
           '@type': 'ImageObject',
           url: absoluteAssetUrl(DEFAULT_IMAGE),
@@ -188,6 +197,7 @@ const buildStructuredData = (
       image: absoluteAssetUrl('KEH_Photo_Headshot_Avatar_Square_WarmIvory_v04.webp'),
       jobTitle: 'Reiki Practitioner and Angel Guidance Practitioner',
       worksFor: { '@id': organizationId },
+      mainEntityOfPage: { '@id': webPageId },
       homeLocation: {
         '@type': 'Place',
         name: 'Huron, South Dakota',
@@ -236,8 +246,8 @@ const SEO = ({
   description,
   canonical,
   ogType = 'website',
-  ogImage = DEFAULT_IMAGE,
-  imageAlt = DEFAULT_IMAGE_ALT,
+  ogImage,
+  imageAlt,
   noIndex = false,
 }: SEOProps) => {
   const { pathname } = useLocation();
@@ -252,7 +262,11 @@ const SEO = ({
     pageMetadata?.fullTitle ||
     (resolvedTitle ? `${resolvedTitle} | ${SITE_NAME}` : `${SITE_NAME} | Reiki & Angel Guidance`);
   const canonicalUrl = canonical || canonicalForPath(normalizedPath);
-  const socialImage = /^https?:\/\//.test(ogImage) ? ogImage : absoluteAssetUrl(ogImage);
+  const resolvedOgImage = ogImage || pageMetadata?.ogImage || DEFAULT_IMAGE;
+  const resolvedImageAlt = imageAlt || pageMetadata?.imageAlt || DEFAULT_IMAGE_ALT;
+  const socialImage = /^https?:\/\//.test(resolvedOgImage)
+    ? resolvedOgImage
+    : absoluteAssetUrl(resolvedOgImage);
   const structuredData = buildStructuredData(
     normalizedPath,
     canonicalUrl,
@@ -265,7 +279,10 @@ const SEO = ({
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={resolvedDescription} />
-      <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow'} />
+      <meta
+        name="robots"
+        content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}
+      />
       <link rel="canonical" href={canonicalUrl} />
 
       <meta property="og:title" content={fullTitle} />
@@ -275,14 +292,14 @@ const SEO = ({
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:locale" content="en_US" />
       <meta property="og:image" content={socialImage} />
-      <meta property="og:image:alt" content={imageAlt} />
+      <meta property="og:image:alt" content={resolvedImageAlt} />
 
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={resolvedDescription} />
       <meta name="twitter:url" content={canonicalUrl} />
       <meta name="twitter:image" content={socialImage} />
-      <meta name="twitter:image:alt" content={imageAlt} />
+      <meta name="twitter:image:alt" content={resolvedImageAlt} />
 
       <script type="application/ld+json">
         {JSON.stringify(structuredData).replace(/</g, '\\u003c')}
